@@ -1,5 +1,8 @@
 #ifndef CONJUNTO_H
 #define CONJUNTO_H
+#include "bloque.h"
+#include "cola.h"
+#include <stdio.h>
 
 struct conjunto {
     cola_t *block_queue;
@@ -13,6 +16,6 @@ conjunto_t create_set();
 
 void destroy_set(conjunto_t set);
 
-void insert_block(conjunto_t set,bloque_t block); 
+void insert_block(conjunto_t set,bloque_t *block);
 
 #endif

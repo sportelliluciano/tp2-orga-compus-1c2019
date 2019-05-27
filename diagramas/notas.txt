@@ -1,0 +1,2 @@
+Cada conjunto tiene 2048 bytes, y cada bloque tiene 64 bytes entonces habra 32
+bloques por conjunto. Cada etiqueta de cada bloque debera tener 5 bytes.

@@ -1,5 +1,7 @@
 #ifndef _CACHE_H_
 #define _CACHE_H_
+#include <stdio.h>
+#include "conjunto.h"
 
 /**
  * Memoria caché simulada.
@@ -14,12 +16,13 @@
  */
 
 struct cache {
-    conjunto_t first_set; //quiza conviene tener un vector de conjuntos(?)
-    conjunto_t second_set;
-    conjunto_t third_set;
-    conjunto_t four_set;
+    //conjunto_t first_set; //quiza conviene tener un vector de conjuntos(?)
+    //conjunto_t second_set;
+    //conjunto_t third_set;
+    //conjunto_t four_set;
+    conjunto_t **sets;
     size_t miss;
-    size_t total_access;
+    size_t hits;
 };
 
 typedef struct cache cache_t;

@@ -32,6 +32,6 @@ void write_byte(unsigned int address, unsigned char value) {
 
 }
 
-float get_miss_rate() {
-    return 0.0;
+float get_miss_rate(cache_t cache) {
+    return cache.miss/(cache.miss+cache.hits);
 }
