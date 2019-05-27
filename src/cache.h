@@ -13,6 +13,16 @@
  * este módulo modificarán la misma y única memoria.
  */
 
+struct cache {
+    conjunto_t first_set; //quiza conviene tener un vector de conjuntos(?)
+    conjunto_t second_set;
+    conjunto_t third_set;
+    conjunto_t four_set;
+    size_t miss;
+    size_t total_access;
+};
+
+typedef struct cache cache_t;
 
 /**
  * Inicializa la memoria principal simulada en 0, los bloques de caché como
