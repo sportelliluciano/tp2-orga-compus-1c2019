@@ -52,19 +52,4 @@ void* cola_ver_primero(const cola_t *cola);
 // contiene un elemento menos, si la cola no estaba vacía.
 void* cola_desencolar(cola_t *cola);
 
-
-/* *****************************************************************
- *                      PRUEBAS UNITARIAS
- * *****************************************************************/
-
-// Realiza pruebas sobre la implementación del alumno.
-//
-// Las pruebas deben emplazarse en el archivo ‘pruebas_alumno.c’, y
-// solamente pueden emplear la interfaz pública tal y como aparece en cola.h
-// (esto es, las pruebas no pueden acceder a los miembros del struct cola).
-//
-// Para la implementación de las pruebas se debe emplear la función
-// print_test(), como se ha visto en TPs anteriores.
-void pruebas_cola_alumno(void);
-
 #endif // COLA_H

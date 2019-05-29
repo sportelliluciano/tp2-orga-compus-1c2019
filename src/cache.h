@@ -1,13 +1,16 @@
 #ifndef _CACHE_H_
 #define _CACHE_H_
 #include <stdio.h>
+#include <stdint.h>
 #include "conjunto.h"
+#define BLOCK_SIZE 64
+#define NUMBER_OF_SETS 8
 
 /**
  * Memoria caché simulada.
  * 
  * Simula un sistema de memoria principal de 64KB con caché asociativa por
- * conjuntos de 4 vías, 2KB de capacidad, bloques de 64 bytes, política de
+ * conjuntoss de 4 vías, 2KB de capacidad, bloques de 64 bytes, política de
  * reemplazo FIFO y política de escritura WT/¬WA.
  * Se asume que el espacio de direcciones es de 16 bits.
  * 
@@ -16,16 +19,14 @@
  */
 
 struct cache {
-    //conjunto_t first_set; //quiza conviene tener un vector de conjuntos(?)
-    //conjunto_t second_set;
-    //conjunto_t third_set;
-    //conjunto_t four_set;
-    conjunto_t **sets;
+    set_t **sets;
     size_t miss;
     size_t hits;
 };
 
 typedef struct cache cache_t;
+
+void create_cache(cache_t *cache);
 
 /**
  * Inicializa la memoria principal simulada en 0, los bloques de caché como
@@ -43,19 +44,19 @@ void init();
 unsigned int get_offset (unsigned int address);
 
 /**
- * Devuelve el el conjunto de caché al que mapea la dirección address.
+ * Devuelve el el via de caché al que mapea la dirección address.
  */
 unsigned int find_set(unsigned int address);
 
 /**
- * Devuelve la vı́a en la que está el bloque más "viejo" dentro de un conjunto, 
+ * Devuelve la vı́a en la que está el bloque más "viejo" dentro de un via, 
  * utilizando el campo correspondiente de los metadatos de los bloques del 
- * conjunto.
+ * via.
  */
 unsigned int select_oldest(unsigned int setnum);
 
 /**
- * Lee el bloque blocknum de memoria y lo guarda en el conjunto y vı́a indicados 
+ * Lee el bloque blocknum de memoria y lo guarda en el via y vı́a indicados 
  * en la memoria caché.
  */
 void read_tocache(unsigned int blocknum, unsigned int way, unsigned int set);
@@ -85,6 +86,8 @@ void write_byte(unsigned int address, unsigned char value);
  * Devuelve el porcentaje de misses desde que se inicializó la caché.
  */
 float get_miss_rate();
+
+void destroy_cache(cache_t *cache);
 
 
 #endif // _CACHE_H_

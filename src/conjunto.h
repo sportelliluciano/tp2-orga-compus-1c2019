@@ -1,21 +1,21 @@
-#ifndef CONJUNTO_H
-#define CONJUNTO_H
+#ifndef SET_H
+#define SET_H
 #include "bloque.h"
 #include "cola.h"
 #include <stdio.h>
 
-struct conjunto {
+struct set {
     cola_t *block_queue;
-    size_t *block_inserted;
     bloque_t **blocks;
+    uint8_t block_inserted;
 };
 
-typedef struct conjunto conjunto_t;
+typedef struct set set_t;
 
-conjunto_t create_set();
+void create_set(set_t *set);
 
-void destroy_set(conjunto_t set);
+void destroy_set(set_t *set);
 
-void insert_block(conjunto_t set,bloque_t *block);
+void insert_block(set_t *set,bloque_t *block);
 
 #endif

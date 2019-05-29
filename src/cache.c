@@ -1,5 +1,17 @@
 #include "cache.h"
 
+void create_cache(cache_t *cache){
+    for (int i=0; i<NUMBER_OF_SETS; i++) {
+        create_set(cache->sets[i]);
+    }
+}
+
+void destroy_cache(cache_t *cache) {
+    for (int i=0; i<NUMBER_OF_SETS; i++) {
+        destroy_set(cache->sets[i]);
+    }
+}
+
 void init() {
 
 }
@@ -33,5 +45,5 @@ void write_byte(unsigned int address, unsigned char value) {
 }
 
 float get_miss_rate(cache_t cache) {
-    return cache.miss/(cache.miss+cache.hits);
+    return (float)(cache.miss/(cache.miss+cache.hits));
 }

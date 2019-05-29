@@ -3,39 +3,35 @@
 #include "conjunto.h"
 #include "cola.h"
 #include "bloque.h"
-#define MAX_BLOCKS 256 //cuentas en hoja(?)
+#define MAX_BLOCKS 4
 
 //********************************************************
 
-conjunto_t create_set() {
-    conjunto_t set;
-    set.block_queue = cola_crear(); //deberia pedir memoria para esto(?)
-    set.block_inserted = malloc(sizeof(size_t));
-    set.blocks = malloc(sizeof(bloque_t*) * MAX_BLOCKS);
-    //if (!(set.is_full) || (!set.block_queue)) return NULL; //tendriamosque revisar (?) ellos ni se gastaban en liberar memoria...
-    return set;
+void create_set(set_t *set) {
+    set->block_queue = cola_crear();
+    set->block_inserted = 0;
+    for (uint8_t i=0; i<MAX_BLOCKS; i++) {
+        create_block(set->blocks[i],i);
+    }
 }
 
 //********************************************************
 
-void destroy_set(conjunto_t set) {
-    free(set.block_inserted);
-    //cola_destruir(set.block_queue,); le deberia pasar una funcion que destruya los bloques? despues deberia destruir el resto lo unico que se me ocurre para saber cuals se destruyeron es dejarlos en modo invalido pero nose si estaria bien que algo destruido me pueda seguir dando info
-    free(set.blocks);
+void destroy_set(set_t *set) {
+    cola_destruir(set->block_queue,NULL);
 }
 
 //********************************************************
 
-bool set_is_full(conjunto_t set) {
-    return (set.block_inserted == MAX_BLOCKS);
+bool set_is_full(set_t *set) {
+    return (set->block_inserted == MAX_BLOCKS);
 }
 
 //********************************************************
 
-size_t search_block_position(conjunto_t set,bloque_t *block) {
-    size_t position = 0;
-    for (size_t i=0; i++; i<set.block_inserted) {
-        if (blocks_are_equeal(*set.blocks[i],*block)) {
+size_t search_block_position(set_t *set,bloque_t *block) {
+    for (size_t i=0; i<MAX_BLOCKS;i++) {
+        if (blocks_are_equal(set->blocks[i],block)) {
             return i;
         }
     }
@@ -44,17 +40,13 @@ size_t search_block_position(conjunto_t set,bloque_t *block) {
 
 //********************************************************
 
-void insert_block(conjunto_t set,bloque_t *block) {
+void insert_block(set_t *set,bloque_t *block) {
     if (set_is_full(set)) {
-        bloque_t *invalid_block = cola_desencolar(set.block_queue);
+        bloque_t *invalid_block = cola_desencolar(set->block_queue);
         size_t position = search_block_position(set,invalid_block);
-        set.blocks[position] = block;
-        cola_encolar(set.block_queue,&block);
+        set->blocks[position] = block;
     } else {
-        cola_encolar(set.block_queue,&block);
-        set.block_inserted++;
-        block->valid = 1;
+        set->blocks[set->block_inserted] = block;
     }
+    cola_encolar(set->block_queue,&block);
 }
-
-//********************************************************

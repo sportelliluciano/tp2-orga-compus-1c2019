@@ -1,61 +1,57 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "bloque.h"
-#define TAG_LEN 5 //cuentas en diagramas/notas.txt
+#include <string.h>
 #define BLOCK_LEN 64
 
 //********************************************************
 
-bloque_t create_block() {
-    bloque_t block;
-    block.line = malloc(sizeof(char) * (BLOCK_LEN -TAG_LEN));
-    block.tag = malloc(sizeof(char) * TAG_LEN);
-    block.valid = malloc(sizeof(size_t));
-    *block.valid = 0;
-    //if (!(block.tag) || !(block.line) || !(block.valid)) return NULL;
-    return block;
+void create_block(bloque_t *block,uint8_t tag) {
+    block->valid = 0;
+    block->tag = tag;
 }
 
 //********************************************************
 
-void destroy_block(bloque_t block) {
-    free(block.line);
-    free(block.tag);
-    free(block.valid);
+void copy_block(bloque_t *block,bloque_t *other) {
+    other->tag = block->tag;
+    memcpy(other->bytes,block->bytes,BLOCK_LEN);
+    block->valid = 1;
+    block->dirty = 0;    
 }
 
 //********************************************************
 
-bool blocks_are_equal(bloque_t block,bloque_t other) {
-    if ((block.valid == 0) ||(other.valid) == 0) return false;
-    if (strncmp(block.tag,other.tag,TAG_LEN) != 0) {
-        return false;
-    }
-    return (strncmp(block.line,other.line,BLOCK_LEN-TAG_LEN) == 0); //No paso el estilo de google :( 
+//void destroy_block(bloque_t *block) {
+//}
+
+//********************************************************
+
+bool blocks_are_equal(bloque_t *block,bloque_t *other) {
+    if (!(block_is_valid(block)) || !(block_is_valid(other))) return false;
+    return block->tag == other->tag;
 }
 
 //********************************************************
 
-void reset_block(bloque_t block) {
-    memset(block.tag,'\0',BLOCK_LEN-TAG_LEN);
-    memset(block.line,'\0',TAG_LEN);
-    block.valid = 0;
+void reset_block(bloque_t *block) {
+    memset(block->bytes,'\0',BLOCK_LEN);
 }
 
 //********************************************************
 
-void set_block_tag(bloque_t block,char* tag) {
-    memcpy(block.tag,tag,TAG_LEN);
+uint8_t block_is_valid(bloque_t *block) {
+    return (block->valid==1);
 }
 
 //********************************************************
 
-void set_block_line(bloque_t block, char* line) {
-    memcpy(block.line,line,BLOCK_LEN-TAG_LEN);
+char read_block_byte(bloque_t *block,uint8_t position) {
+    return (block->bytes[position]);
 }
 
 //********************************************************
 
-void set_block_valid(bloque_t block) {
-    block.valid = 1;
+void write_block_byte(bloque_t *block,uint8_t position,char value) {
+    block->bytes[position] = value;
 }
