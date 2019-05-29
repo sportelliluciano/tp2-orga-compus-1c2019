@@ -18,4 +18,8 @@ void destroy_set(set_t *set);
 
 void insert_block(set_t *set,bloque_t *block);
 
+bloque_t *get_block_from_set(set_t *set,bloque_t *block);
+
+void reset_set(set_t *set);
+
 #endif

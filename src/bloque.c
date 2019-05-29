@@ -36,6 +36,8 @@ bool blocks_are_equal(bloque_t *block,bloque_t *other) {
 
 void reset_block(bloque_t *block) {
     memset(block->bytes,'\0',BLOCK_LEN);
+    block->dirty = 0;
+    block->valid = 0;
 }
 
 //********************************************************
