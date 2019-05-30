@@ -43,15 +43,9 @@ unsigned int select_oldest(unsigned int setnum) {
 
 void read_tocache(unsigned int blocknum, unsigned int way, unsigned int set) {
     if (way>=4 || set>=8) return;
-    printf("Entra al read_tocache\n");
-    printf("Way pedido: %i\n",way);
     bloque_t *block = get_block(cache->mp,blocknum);
-    printf("Block valido:%i\n", block->valid);
-    printf("Blocknum pedido: %i\n",blocknum);
     unsigned int tag = (blocknum >> 3);
-    printf("Tag :%i\n", tag);
     insert_block(cache->sets[set],block,way,tag);
-    printf("Leo desde afuera el byte del block que copio: %i\n",cache->sets[set]->blocks[way]->bytes[0]);
 }
 
 uint16_t get_tag(unsigned int address) {
@@ -71,13 +65,10 @@ void write_tocache(unsigned int address, unsigned char value) {
 }
 
 unsigned char read_byte(unsigned int address) {
+    address &= 0xFFFF; // Addresses are 16 bit long
     unsigned int set = find_set(address);
     unsigned int offset = get_offset(address);
     uint16_t tag = get_tag(address);
-    printf("########################\n");
-    printf("Tag en read_byte: %i\n",tag);
-    //printf("Blocknum en read_byte: %i\n",blocknum);
-    printf("Leido: %i\n",read_from_mp(cache->mp,get_block_num(address), offset));
     if (search_block_position(cache->sets[set],tag) == -1) {
         cache->miss++;
         unsigned int way = select_oldest(set);
@@ -88,7 +79,8 @@ unsigned char read_byte(unsigned int address) {
     return read_block(cache->sets[set],tag,offset);
 }
 
-void write_byte(unsigned int address, unsigned char value) { //falta lo del dirty
+void write_byte(unsigned int address, unsigned char value) {
+    address &= 0xFFFF; // Addresses are 16 bit long
     unsigned int set = find_set(address);
     uint16_t tag = get_tag(address);
     if (search_block_position(cache->sets[set],tag) == -1) {
@@ -100,6 +92,6 @@ void write_byte(unsigned int address, unsigned char value) { //falta lo del dirt
     write_to_mp(cache->mp,address,value);
 }
 
-float get_miss_rate(cache_t cache) {
-    return (float)(cache.miss/(cache.miss+cache.hits));
+float get_miss_rate() {
+    return (cache->miss/(float)(cache->miss+cache->hits));
 }

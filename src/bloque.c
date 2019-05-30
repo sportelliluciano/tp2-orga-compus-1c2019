@@ -16,7 +16,6 @@ void create_block(bloque_t *block) {
 
 void copy_block(bloque_t *block,bloque_t *other,uint8_t tag) {
     other->tag = tag;
-    printf("Tag en el copy block:%i\n",tag);
     memcpy(other->bytes,block->bytes,BLOCK_LEN);
     block->valid = 1;
     block->dirty = 0;    

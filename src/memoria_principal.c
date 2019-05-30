@@ -29,17 +29,13 @@ uint16_t get_block_offset(unsigned int address) {
 }
 
 bloque_t *get_block(mp_t *mp,unsigned int blocknum) {
-    printf("El bloque en mp valido:%i\n",mp->memory[blocknum]->valid);
     return mp->memory[blocknum];
 }
 
 void write_to_mp(mp_t *mp, unsigned int address, unsigned char value) {
     uint16_t block_num = get_block_number(address);
     uint16_t offset = get_block_offset(address);
-    //printf("Blocknums escrito en mp:%i\n",block_num);
-    //printf("El offset es:%i\n",offset);
     write_block_byte(mp->memory[block_num],offset,value);
-    //printf("Escrito, leo depsues de el write block:%i\n", mp->memory[block_num]->bytes[offset]);
 }
 
 unsigned char read_from_mp(mp_t *mp, unsigned int blocknum, unsigned int position) {

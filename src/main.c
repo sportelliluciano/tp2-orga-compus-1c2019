@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
             case CMD_MR:
                 if (verbose)
                     printf("miss rate: ");
-                //printf("%.2f\n", get_miss_rate());
+                printf("%.2f\n", get_miss_rate());
                 break;
             default:
                 fprintf(stderr, "ERROR: Comando no reconocido. Abortando\n");

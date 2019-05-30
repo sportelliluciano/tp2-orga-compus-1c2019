@@ -44,9 +44,10 @@ int search_block_position(set_t *set,uint8_t tag) {
 
 void insert_block(set_t *set,bloque_t *block, unsigned int way,unsigned int tag) {
     copy_block(block,set->blocks[way],tag);
-    printf("Se copio bien, lee el byte que tiene: %i\n",set->blocks[way]->bytes[0]);
     block_to_valid(set->blocks[way]);
-    cola_encolar(set->block_queue,&block);
+    cola_encolar(set->block_queue,set->blocks[way]);
+    if (set->block_inserted >= 4)
+        cola_desencolar(set->block_queue);
 }
 
 //********************************************************
@@ -61,8 +62,7 @@ void reset_set(set_t *set) {
 
 int get_via_last_block(set_t *set) {
     if (set->block_inserted < 4) {
-        set->block_inserted++;
-        return set->block_inserted-1;
+        return set->block_inserted++;
     }
     bloque_t *last = cola_ver_primero(set->block_queue);
     return search_block_position(set,get_block_tag(last));
@@ -72,8 +72,6 @@ int get_via_last_block(set_t *set) {
 
 unsigned char read_block(set_t *set, unsigned int tag,unsigned int offset) {
     unsigned int way = search_block_position(set,tag); 
-    printf("El way es:%i\n",way);
-    printf("Tag en el read block:%i\n",tag);
     if (way==-1) return 0;
     return read_block_byte(set->blocks[way],offset);
 }
