@@ -1,20 +1,22 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "bloque.h"
 #include <string.h>
+#include <stdlib.h>
+#include "bloque.h"
 #define BLOCK_LEN 64
 
 //********************************************************
 
-void create_block(bloque_t *block,uint8_t tag) {
+void create_block(bloque_t *block) {
     block->valid = 0;
-    block->tag = tag;
+    block->bytes = calloc(BLOCK_LEN,sizeof(char));
 }
 
 //********************************************************
 
-void copy_block(bloque_t *block,bloque_t *other) {
-    other->tag = block->tag;
+void copy_block(bloque_t *block,bloque_t *other,uint8_t tag) {
+    other->tag = tag;
+    printf("Tag en el copy block:%i\n",tag);
     memcpy(other->bytes,block->bytes,BLOCK_LEN);
     block->valid = 1;
     block->dirty = 0;    
@@ -22,8 +24,9 @@ void copy_block(bloque_t *block,bloque_t *other) {
 
 //********************************************************
 
-//void destroy_block(bloque_t *block) {
-//}
+void destroy_block(bloque_t *block) {
+    free(block->bytes);
+}
 
 //********************************************************
 
@@ -62,4 +65,12 @@ unsigned char read_block_byte(bloque_t *block,uint8_t position) {
 
 void write_block_byte(bloque_t *block,uint8_t position,char value) {
     block->bytes[position] = value;
+    //printf("Leo durante el write block:%i\n", block->bytes[position]);
 }
+
+//********************************************************
+
+void block_to_valid(bloque_t *block) {
+    block->valid=1;
+}
+

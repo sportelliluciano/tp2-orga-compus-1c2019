@@ -67,7 +67,10 @@ int main(int argc, char *argv[]) {
     bool verbose = false;
     char* filename = NULL;
     FILE* input;
-
+    mp_t *mp = calloc(1,sizeof(mp_t));
+    cache = calloc(1,sizeof(cache_t));
+    create_mp(mp);
+    create_cache(mp);
     if (!process_argv(argc, argv, &verbose, &filename)) {
         print_help();
         return EXIT_FAILURE;
@@ -86,7 +89,7 @@ int main(int argc, char *argv[]) {
 
     char buffer[8192];
     while (fgets(buffer, sizeof(buffer), input)) {
-        size_t ptr = 0;
+        //size_t ptr = 0; //para que esta esto?
         unsigned int addr;
         unsigned char value;
         command_t cmd = input_process_line(buffer, &addr, &value);
@@ -109,7 +112,7 @@ int main(int argc, char *argv[]) {
             case CMD_MR:
                 if (verbose)
                     printf("miss rate: ");
-                printf("%.2f\n", get_miss_rate());
+                //printf("%.2f\n", get_miss_rate());
                 break;
             default:
                 fprintf(stderr, "ERROR: Comando no reconocido. Abortando\n");
@@ -121,6 +124,9 @@ int main(int argc, char *argv[]) {
 
     if (input != stdin)
         fclose(input);
-
+    destroy_mp(mp);
+    destroy_cache(cache);
+    free(mp);
+    free(cache);
     return EXIT_SUCCESS;
 }

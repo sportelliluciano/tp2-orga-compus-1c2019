@@ -12,10 +12,12 @@ typedef struct mp mp_t;
 
 void create_mp(mp_t* mp);
 
-void write_to_mp(mp_t *mp, unsigned int tag, unsigned int position, unsigned char value);
+void destroy_mp(mp_t *mp);
 
-unsigned char read_from_mp(mp_t *mp, unsigned int tag, unsigned int position);
+void write_to_mp(mp_t *mp, unsigned int address, unsigned char value);
 
-bloque_t *get_block(mp_t *mp,unsigned int tag);
+unsigned char read_from_mp(mp_t *mp, unsigned int blocknum, unsigned int position);
+
+bloque_t *get_block(mp_t *mp,unsigned int blocknum);
 
 #endif

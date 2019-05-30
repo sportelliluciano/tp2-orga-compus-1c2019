@@ -1,0 +1,5 @@
+1-lo de dirty
+2-el tag y blocknum no es lo mismo y en mp el block tiene numero como tag 
+entonces cuando lo copio para poner en la cache queda el blocknum como tag 
+yno lo encuentra
+3-missrate

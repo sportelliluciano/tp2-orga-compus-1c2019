@@ -1,16 +1,23 @@
+#include <stdlib.h>
 #include "cache.h"
 
 void create_cache(mp_t *mp) {
     cache->mp = mp;
+    cache->sets = calloc(NUMBER_OF_SETS,sizeof(set_t*));
     for (int i=0; i<NUMBER_OF_SETS; i++) {
+        cache->sets[i] = calloc(1,sizeof(set_t));
         create_set(cache->sets[i]);
     }
+    cache->hits = 0;
+    cache->miss = 0;
 }
 
 void destroy_cache() {
     for (int i=0; i<NUMBER_OF_SETS; i++) {
         destroy_set(cache->sets[i]);
+        free(cache->sets[i]);
     }
+    free(cache->sets);
 }
 
 void init() {
@@ -36,34 +43,61 @@ unsigned int select_oldest(unsigned int setnum) {
 
 void read_tocache(unsigned int blocknum, unsigned int way, unsigned int set) {
     if (way>=4 || set>=8) return;
+    printf("Entra al read_tocache\n");
+    printf("Way pedido: %i\n",way);
     bloque_t *block = get_block(cache->mp,blocknum);
-    insert_block(cache->sets[set],block,way);
-}
-
-void write_tocache(/*unsigned int address, unsigned char value*/) {
-
+    printf("Block valido:%i\n", block->valid);
+    printf("Blocknum pedido: %i\n",blocknum);
+    unsigned int tag = (blocknum >> 3);
+    printf("Tag :%i\n", tag);
+    insert_block(cache->sets[set],block,way,tag);
+    printf("Leo desde afuera el byte del block que copio: %i\n",cache->sets[set]->blocks[way]->bytes[0]);
 }
 
 uint16_t get_tag(unsigned int address) {
     return (address >> 9);
 }
 
+unsigned int get_block_num(unsigned int address) {
+    return (address >> 6);
+}
+
+void write_tocache(unsigned int address, unsigned char value) {
+    unsigned int set = find_set(address);
+    unsigned int offset = get_offset(address);
+    uint16_t tag = get_tag(address);
+    unsigned int way = search_block_position(cache->sets[set],tag);
+    write_block(cache->sets[set],way,offset,value);
+}
+
 unsigned char read_byte(unsigned int address) {
     unsigned int set = find_set(address);
     unsigned int offset = get_offset(address);
     uint16_t tag = get_tag(address);
+    printf("########################\n");
+    printf("Tag en read_byte: %i\n",tag);
+    //printf("Blocknum en read_byte: %i\n",blocknum);
+    printf("Leido: %i\n",read_from_mp(cache->mp,get_block_num(address), offset));
     if (search_block_position(cache->sets[set],tag) == -1) {
         cache->miss++;
         unsigned int way = select_oldest(set);
-        read_tocache(address,way,set);
+        read_tocache(get_block_num(address),way,set);
     } else {
         cache->hits++;
     }
     return read_block(cache->sets[set],tag,offset);
 }
 
-void write_byte(/*unsigned int address, unsigned char value*/) {
-    
+void write_byte(unsigned int address, unsigned char value) { //falta lo del dirty
+    unsigned int set = find_set(address);
+    uint16_t tag = get_tag(address);
+    if (search_block_position(cache->sets[set],tag) == -1) {
+        cache->miss++;
+    } else {
+        write_tocache(address,value);
+        cache->hits++;
+    }
+    write_to_mp(cache->mp,address,value);
 }
 
 float get_miss_rate(cache_t cache) {
