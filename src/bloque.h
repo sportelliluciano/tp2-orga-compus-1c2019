@@ -22,9 +22,11 @@ void reset_block(bloque_t *block);
 
 uint8_t block_is_valid(bloque_t *block); 
 
+uint8_t get_block_tag(bloque_t *block);
+
 void copy_block(bloque_t *block,bloque_t *other);
 
-char read_block_byte(bloque_t *block,uint8_t position);
+unsigned char read_block_byte(bloque_t *block,uint8_t position);
 
 void write_block_byte(bloque_t *block,uint8_t position,char value);
 

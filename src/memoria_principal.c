@@ -13,3 +13,15 @@ void create_mp(mp_t *mp) {
 void destroy_mp(mp_t *mp) {
     free(mp->memory);
 }
+
+bloque_t *get_block(mp_t *mp,unsigned int tag) {
+    return mp->memory[tag];
+}
+
+void write_to_mp(mp_t *mp, unsigned int tag, unsigned int position, unsigned char value) {
+    write_block_byte(mp->memory[tag],position,value);
+}
+
+unsigned char read_from_mp(mp_t *mp, unsigned int tag, unsigned int position) {
+    return read_block_byte(mp->memory[tag],position);
+}

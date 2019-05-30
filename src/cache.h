@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "conjunto.h"
+#include "memoria_principal.h"
 #define BLOCK_SIZE 64
 #define NUMBER_OF_SETS 8
 
@@ -22,13 +23,14 @@ struct cache {
     set_t **sets;
     size_t miss;
     size_t hits;
+    mp_t *mp;
 };
 
 typedef struct cache cache_t;
 
 cache_t *cache; //Defino variable global cache (que no vean los alumnos de algo1) :O  :´(  X_X 
 
-void create_cache();
+void create_cache(mp_t *mp);
 
 /**
  * Inicializa la memoria principal simulada en 0, los bloques de caché como
@@ -65,7 +67,7 @@ void read_tocache(unsigned int blocknum, unsigned int way, unsigned int set);
 
 /**
  */
-void write_tocache(unsigned int address, unsigned char c);
+void write_tocache(/*unsigned int address, unsigned char c*/);
 
 /**
  * Busca el valor del byte correspondiente a la posición address en la caché; 
@@ -81,7 +83,7 @@ unsigned char read_byte(unsigned int address);
  * la caché. 
  * Si no se encuentra, escribe el valor solamente en la memoria.
  */
-void write_byte(unsigned int address, unsigned char value);
+void write_byte(/*unsigned int address, unsigned char value*/);
 
 /**
  * Devuelve el porcentaje de misses desde que se inicializó la caché.

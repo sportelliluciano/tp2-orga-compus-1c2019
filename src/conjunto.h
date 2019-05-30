@@ -16,10 +16,14 @@ void create_set(set_t *set);
 
 void destroy_set(set_t *set);
 
-void insert_block(set_t *set,bloque_t *block);
-
-bloque_t *get_block_from_set(set_t *set,bloque_t *block);
+void insert_block(set_t *set,bloque_t *block, unsigned int way);
 
 void reset_set(set_t *set);
+
+int get_via_last_block(set_t *set); 
+
+int search_block_position(set_t *set,uint8_t tag);
+
+unsigned char read_block(set_t *set, unsigned int way,unsigned int offset); 
 
 #endif

@@ -48,7 +48,13 @@ uint8_t block_is_valid(bloque_t *block) {
 
 //********************************************************
 
-char read_block_byte(bloque_t *block,uint8_t position) {
+uint8_t get_block_tag(bloque_t *block) {
+    return (block->tag);
+}
+
+//********************************************************
+
+unsigned char read_block_byte(bloque_t *block,uint8_t position) {
     return (block->bytes[position]);
 }
 

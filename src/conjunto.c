@@ -23,40 +23,20 @@ void destroy_set(set_t *set) {
 
 //********************************************************
 
-bool set_is_full(set_t *set) {
-    return (set->block_inserted == MAX_BLOCKS);
-}
-
-//********************************************************
-
-int search_block_position(set_t *set,bloque_t *block) {
+int search_block_position(set_t *set,uint8_t tag) {
     for (int i=0; i<MAX_BLOCKS;i++) {
-        if (blocks_are_equal(set->blocks[i],block)) {
-            return i;
-        }
+        if (!block_is_valid(set->blocks[i])) continue;
+        if (get_block_tag(set->blocks[i]) != tag) continue;
+        return i;
     }
     return -1; //posicion invalida (?)
 }
 
 //********************************************************
 
-void insert_block(set_t *set,bloque_t *block) {
-    if (set_is_full(set)) {
-        bloque_t *invalid_block = cola_desencolar(set->block_queue);
-        size_t position = search_block_position(set,invalid_block);
-        set->blocks[position] = block;
-    } else {
-        set->blocks[set->block_inserted] = block;
-    }
+void insert_block(set_t *set,bloque_t *block, unsigned int way) {
+    copy_block(block,set->blocks[way]);
     cola_encolar(set->block_queue,&block);
-}
-
-//********************************************************
-
-bloque_t *get_block_from_set(set_t *set,bloque_t *block) {
-    int position = search_block_position(set,block);
-    if (position == -1) return NULL;
-    return set->blocks[position];
 }
 
 //********************************************************
@@ -71,5 +51,17 @@ void reset_set(set_t *set) {
 
 int get_via_last_block(set_t *set) {
     bloque_t *last = cola_ver_primero(set->block_queue);
-    return search_block_position(set,last);
+    return search_block_position(set,get_block_tag(last));
+}
+
+//********************************************************
+
+unsigned char read_block(set_t *set, unsigned int way,unsigned int offset) {
+    return read_block_byte(set->blocks[way],offset);
+}
+
+//********************************************************
+
+bool block_set_is_valid(set_t *set,unsigned int way) {
+    return block_is_valid(set->blocks[way]);
 }
